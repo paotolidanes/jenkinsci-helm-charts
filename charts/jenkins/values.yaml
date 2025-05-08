@@ -186,7 +186,8 @@ controller:
   # Set runAsUser to 1000 to let Jenkins run as non-root user 'jenkins', which exists in 'jenkins/jenkins' docker image.
   # When configuring runAsUser to a different value than 0 also set fsGroup to the same value:
   # -- Deprecated in favor of `controller.podSecurityContextOverride`. uid that jenkins runs with.
-  runAsUser: 1000
+  # runAsUser: 1000
+  runAsUser: 0
 
   # -- Deprecated in favor of `controller.podSecurityContextOverride`. uid that will be used for persistent volume.
   fsGroup: 1000
@@ -199,20 +200,28 @@ controller:
 
   # In the case of mounting an ext4 filesystem, it might be desirable to use `supplementalGroups` instead of `fsGroup` in
   # the `securityContext` block: https://github.com/kubernetes/kubernetes/issues/67014#issuecomment-589915496
-  # podSecurityContextOverride:
-  #   runAsUser: 1000
-  #   runAsNonRoot: true
-  #   supplementalGroups: [1000]
-  #   capabilities: {}
+  podSecurityContextOverride:
+    # runAsUser: 1000
+    # runAsNonRoot: true
+    # supplementalGroups: [1000]
+    # capabilities: {}
+    runAsUser: 0
+    runAsNonRoot: false
+    supplementalGroups: [0]
+    capabilities: {}
   # -- Completely overwrites the contents of the pod security context, ignoring the values provided for `runAsUser`, `fsGroup`, and `securityContextCapabilities`
-  podSecurityContextOverride: ~
+  # podSecurityContextOverride: ~
 
   # -- Allow controlling the securityContext for the jenkins container
   containerSecurityContext:
-    runAsUser: 1000
-    runAsGroup: 1000
-    readOnlyRootFilesystem: true
-    allowPrivilegeEscalation: false
+    # runAsUser: 1000
+    # runAsGroup: 1000
+    # readOnlyRootFilesystem: true
+    # allowPrivilegeEscalation: false
+    runAsUser: 0
+    runAsGroup: 0
+    readOnlyRootFilesystem: false
+    allowPrivilegeEscalation: true
 
   # For minikube, set this to NodePort, elsewhere uses LoadBalancer
   # Use ClusterIP if your setup includes ingress controller
@@ -1256,7 +1265,7 @@ persistence:
   # If undefined (the default) or set to null, no storageClassName spec is
   #   set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS & OpenStack)
   # -- Storage class for the PVC
-  storageClass:
+  storageClass: jenkins-pv
   # -- Annotations for the PVC
   annotations: {}
   # -- Labels for the PVC
